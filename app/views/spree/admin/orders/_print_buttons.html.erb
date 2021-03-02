@@ -1,7 +1,3 @@
 <% if @order and @order.completed_at? %>
-  <% buttons = Spree::PrintInvoice::Config[:print_buttons]
-     buttons = buttons.split(",").collect{|b| b.strip } %>
-  <%  buttons.each do |button| %>
-    <li><%= link_to(I18n.t("spree.#{button}_print"), spree.admin_order_path(@order, :pdf , :template => button), :class => "button fa fa-print") %></li>
-  <% end %>
+  <li><%= link_to(I18n.t("spree.packaging_slip_print"), spree.admin_order_path(@order, :pdf , :template => 'packaging_slip'), :class => "button fa fa-print") %></li>
 <% end %>

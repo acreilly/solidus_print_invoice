@@ -1,43 +1,36 @@
 data = []
 
-if @hide_prices
-  @column_widths = { 0 => 100, 1 => 165, 2 => 75, 3 => 75 }
-  @align = { 0 => :left, 1 => :left, 2 => :right, 3 => :right }
-  data << [I18n.t('spree.sku'), I18n.t('spree.item_description'), I18n.t('spree.options'), I18n.t('spree.qty')]
-else
-  @column_widths = { 0 => 75, 1 => 205, 2 => 75, 3 => 50, 4 => 75, 5 => 60 }
-  @align = { 0 => :left, 1 => :left, 2 => :left, 3 => :right, 4 => :right, 5 => :right}
-  data << [I18n.t('spree.sku'), I18n.t('spree.item_description'), I18n.t('spree.options'), I18n.t('spree.price'), I18n.t('spree.qty'), I18n.t('spree.total')]
-end
+@column_widths = { 0 => 75, 1 => 205, 2 => 75, 3 => 50, 4 => 75, 5 => 60 }
+@align = { 0 => :left, 1 => :left, 2 => :left, 3 => :right, 4 => :right, 5 => :right}
+data << [I18n.t('spree.sku'), I18n.t('spree.name'), I18n.t('spree.size'), I18n.t('spree.price'), I18n.t('spree.qty'), I18n.t('spree.total')]
 
 @order.line_items.each do |item|
   row = [ item.variant.product.sku, item.variant.product.name]
   row << item.variant.options_text
-  row << item.single_display_amount.to_s unless @hide_prices
+  row << item.single_display_amount.to_s
   row << item.quantity
-  row << item.display_amount.to_s unless @hide_prices
+  row << item.display_amount.to_s
   data << row
 end
 
 extra_row_count = 0
 
-unless @hide_prices
+extra_row_count += 1
+data << [""] * 5
+data << [nil, nil, nil, nil, I18n.t('spree.subtotal'), @order.display_item_total.to_s]
+
+@order.all_adjustments.eligible.each do |adjustment|
+  next if adjustment.display_amount.zero?
   extra_row_count += 1
-  data << [""] * 5
-  data << [nil, nil, nil, nil, I18n.t('spree.subtotal'), @order.display_item_total.to_s]
-
-  @order.all_adjustments.eligible.each do |adjustment|
-    extra_row_count += 1
-    data << [nil, nil, nil, nil, adjustment.label, adjustment.display_amount.to_s]
-  end
-
-  @order.shipments.each do |shipment|
-    extra_row_count += 1
-    data << [nil, nil, nil, nil, shipment.shipping_method.name, shipment.display_cost.to_s]
-  end
-
-  data << [nil, nil, nil, nil, I18n.t('spree.total'), @order.display_total.to_s]
+  data << [nil, nil, nil, nil, adjustment.label, adjustment.display_amount.to_s]
 end
+
+@order.shipments.each do |shipment|
+  extra_row_count += 1
+  data << [nil, nil, nil, nil, shipment.shipping_method.name, shipment.display_cost.to_s]
+end
+
+data << [nil, nil, nil, nil, I18n.t('spree.total'), @order.display_total.to_s]
 
 move_down(250)
 table(data, :width => @column_widths.values.compact.sum, :column_widths => @column_widths) do
