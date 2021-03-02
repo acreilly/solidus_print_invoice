@@ -3,6 +3,7 @@
 
 en:
   spree:
+    size: Size
     customer_invoice: Customer Invoice
     footer_left: "Return in Other info"
     footer_left2: " 14 days or never"
@@ -13,7 +14,7 @@ en:
     print_note: This is not an original invoice (DO NOT SEND THIS TO CUSTOMER)
 
     invoice_print: Print Invoice
-    packaging_slip_print: Print Slip
+    packaging_slip_print: Print Packaging Slip
     packaging_slip: Packaging Slip
 
     invoice_font_face: Invoice Font Face

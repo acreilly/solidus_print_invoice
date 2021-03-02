@@ -15,6 +15,6 @@ RSpec.describe "Print Invoice button", js: true do
 
     click_link order.number
 
-    expect(page).to have_link('Print Invoice', href: spree.admin_order_path(order, :pdf, template: 'invoice'))
+    expect(page).to have_link('Print Packaging Slip', href: spree.admin_order_path(order, :pdf, template: 'packaging_slip'))
   end
 end
